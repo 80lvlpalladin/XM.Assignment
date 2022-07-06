@@ -17,7 +17,7 @@ namespace XM.Assignment.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetSourcesAsync()
+        public IActionResult GetAllSources()
         {
             return Ok(_sources);
         }

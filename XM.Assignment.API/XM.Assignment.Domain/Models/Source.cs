@@ -2,9 +2,5 @@
 
 namespace XM.Assignment.Domain.Models
 {
-    public class Source
-    {
-        public string Name { get; set; }
-        public Uri Uri { get; set; }
-    }
+    public record Source(string Name, Uri Uri);
 }

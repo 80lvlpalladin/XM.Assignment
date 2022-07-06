@@ -1,6 +1,6 @@
 ﻿namespace XM.Assignment.Domain.Models.Enums
 {
-    internal enum Currency
+    public enum Currency
     {
         USD = 0,
     }
