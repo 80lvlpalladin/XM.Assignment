@@ -13,6 +13,7 @@ builder.Services.AddSwaggerGen();
 var confBuilder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
 builder.Services.Configure<AppSettings>(confBuilder.Build());
 
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

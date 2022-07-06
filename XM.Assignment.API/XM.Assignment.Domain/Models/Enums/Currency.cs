@@ -2,6 +2,6 @@
 {
     public enum Currency
     {
-        USD = 0,
+        BtcUsd = 0,
     }
 }

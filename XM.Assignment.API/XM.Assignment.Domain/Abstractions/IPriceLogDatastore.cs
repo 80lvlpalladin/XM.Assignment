@@ -2,9 +2,9 @@
 
 namespace XM.Assignment.Domain.Abstractions
 {
-    public interface IBitcoinPriceLogDatastore
+    public interface IPriceLogDatastore
     {
-        IEnumerable<BitcoinPriceLogEntry>? GetAll(string sourceName);
-        bool Save(string sourceName, BitcoinPriceLogEntry logEntry);
+        IEnumerable<PriceLogEntry>? GetAll(string sourceName);
+        bool Save(string sourceName, PriceLogEntry logEntry);
     }
 }

@@ -1,23 +1,22 @@
-﻿using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+﻿using XM.Assignment.Domain.Abstractions;
 using XM.Assignment.Domain.Models;
 
 namespace XM.Assignment.Domain.Services
 {
-    internal class BitcoinPriceFetcherService
+    internal class PriceFetcherService
     {
         private readonly HttpClient _httpClient;
         private readonly IEnumerable<Source> _sources;
+        private readonly IPriceLogDatastore _priceLogDatastore;
 
-        public BitcoinPriceFetcherService(IHttpClientFactory httpClientFactory, IEnumerable<Source> sources)
+        public PriceFetcherService(
+            IHttpClientFactory httpClientFactory, 
+            ISourcesProvider sourcesProvider, 
+            IPriceLogDatastore priceLogDatastore)
         {
             _httpClient = httpClientFactory.CreateClient();
-            this._sources = sources;
+            _sources = sourcesProvider.GetAll();
+            _priceLogDatastore = priceLogDatastore;
         }
     }
 }

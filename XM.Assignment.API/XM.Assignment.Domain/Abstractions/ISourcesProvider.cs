@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XM.Assignment.Domain.Models;
 
 namespace XM.Assignment.Domain.Abstractions
 {
-    internal class ISourcesProvider
+    public interface ISourcesProvider
     {
+        public IEnumerable<Source> GetAll();
     }
 }

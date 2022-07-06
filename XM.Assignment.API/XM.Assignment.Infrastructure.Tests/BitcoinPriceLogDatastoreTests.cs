@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XM.Assignment.Domain.Models;
 using XM.Assignment.Domain.Models.Enums;
 using XM.Assignment.Infrastructure.Configuration;
@@ -12,12 +7,7 @@ using XM.Assignment.Infrastructure.Datastore;
 namespace XM.Assignment.Infrastructure.Tests
 {
     public class BitcoinPriceLogDatastoreTests
-    {
-        public BitcoinPriceLogDatastoreTests()
-        {
-
-        }
-        
+    {      
         [Fact]
         public void Datastore_StoresTheExactAmountOfPricelogs_ThatWereSaved_ForExistingSource()
         {
@@ -28,7 +18,7 @@ namespace XM.Assignment.Infrastructure.Tests
                 new Source("Bitfinex", new Uri("http://someUri"))
             };
             var options = Options.Create(new AppSettings { Sources = sources });
-            var datastore = new BitcoinPriceLogDatastore(options);
+            var datastore = new PriceLogDatastore(options);
 
             //Act
             datastore.Save("Bitstamp", new BitcoinPriceLogEntry(8.2m, DateTime.Now, Currency.USD));
@@ -49,7 +39,7 @@ namespace XM.Assignment.Infrastructure.Tests
                 new Source("Bitfinex", new Uri("http://someUri"))
             };
             var options = Options.Create(new AppSettings { Sources = sources });
-            var datastore = new BitcoinPriceLogDatastore(options);
+            var datastore = new PriceLogDatastore(options);
 
             //Act-Assert
             Assert.True(sources.All(s => datastore.GetAll(s.Name).Count() is 0));
@@ -66,7 +56,7 @@ namespace XM.Assignment.Infrastructure.Tests
                 new Source("Bitfinex", new Uri("http://someUri"))
             };
             var options = Options.Create(new AppSettings { Sources = sources });
-            var datastore = new BitcoinPriceLogDatastore(options);
+            var datastore = new PriceLogDatastore(options);
             var nonExistingSource = "sdgwag";
 
             //Act-Assert

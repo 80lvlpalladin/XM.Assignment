@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using XM.Assignment.Domain.Abstractions;
 using XM.Assignment.Domain.Models;
 using XM.Assignment.Infrastructure.Configuration;
 
@@ -9,17 +10,14 @@ namespace XM.Assignment.API.Controllers
     [ApiController]
     public class SourcesController : ControllerBase
     {
-        private readonly IEnumerable<Source> _sources;
+        private readonly ISourcesProvider _sourcesProvider;
 
-        public SourcesController(IOptions<AppSettings> appSettings)
+        public SourcesController(ISourcesProvider sourcesProvider)
         {
-            _sources = appSettings.Value.Sources;
+            _sourcesProvider = sourcesProvider;
         }
 
         [HttpGet]
-        public IActionResult GetAllSources()
-        {
-            return Ok(_sources);
-        }
+        public IActionResult GetAllSources() => Ok(_sourcesProvider.GetAll());
     }
 }

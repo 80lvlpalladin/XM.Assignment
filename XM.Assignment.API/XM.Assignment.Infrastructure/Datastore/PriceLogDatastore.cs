@@ -6,27 +6,27 @@ using XM.Assignment.Domain.Abstractions;
 
 namespace XM.Assignment.Infrastructure.Datastore
 {
-    public class BitcoinPriceLogDatastore : IBitcoinPriceLogDatastore
+    public class PriceLogDatastore : IPriceLogDatastore
     {
-        private readonly IDictionary<string, IList<BitcoinPriceLogEntry>> _priceLog;
+        private readonly IDictionary<string, IList<PriceLogEntry>> _priceLog;
 
-        public BitcoinPriceLogDatastore(IOptions<AppSettings> appSettings)
+        public PriceLogDatastore(ISourcesProvider sourcesProvider)
         {
-            _priceLog = new Dictionary<string, IList<BitcoinPriceLogEntry>>();
-            foreach (var source in appSettings.Value.Sources.Select(s => s.Name.ToLower()))
+            _priceLog = new Dictionary<string, IList<PriceLogEntry>>();
+            foreach (var source in sourcesProvider.GetAll().Select(s => s.Name.ToLower()))
             {
-                _priceLog.TryAdd(source, new List<BitcoinPriceLogEntry>());
+                _priceLog.TryAdd(source, new List<PriceLogEntry>());
             }
         }
 
-        public IEnumerable<BitcoinPriceLogEntry>? GetAll(string sourceName)
+        public IEnumerable<PriceLogEntry>? GetAll(string sourceName)
         {
             return _priceLog.TryGetValue(sourceName.ToLower(), out var priceLogEntries) ?
                 priceLogEntries :
                 null;
         }
 
-        public bool Save(string sourceName, BitcoinPriceLogEntry logEntry)
+        public bool Save(string sourceName, PriceLogEntry logEntry)
         {
             var result = false;
             var lowercaseSourceName = sourceName.ToLower();
