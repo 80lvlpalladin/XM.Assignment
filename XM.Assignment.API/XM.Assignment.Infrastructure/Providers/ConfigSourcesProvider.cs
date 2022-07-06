@@ -20,5 +20,8 @@ namespace XM.Assignment.Infrastructure.Providers
         }
 
         public IEnumerable<Source> GetAll() => _sources;
+
+        public Source? GetByName(string name) => 
+            _sources.FirstOrDefault(x => x.Name.ToLower() == name.ToLower());
     }
 }

@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\XM.Assignment.Domain\XM.Assignment.Domain.csproj" />
     <ProjectReference Include="..\XM.Assignment.Infrastructure\XM.Assignment.Infrastructure.csproj" />
   </ItemGroup>
 

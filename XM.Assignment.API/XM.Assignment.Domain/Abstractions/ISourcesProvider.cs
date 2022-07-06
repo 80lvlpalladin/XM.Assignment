@@ -10,5 +10,6 @@ namespace XM.Assignment.Domain.Abstractions
     public interface ISourcesProvider
     {
         public IEnumerable<Source> GetAll();
+        Source? GetByName(string name);
     }
 }
