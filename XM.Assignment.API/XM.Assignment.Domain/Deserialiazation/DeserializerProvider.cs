@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using XM.Assignment.Domain.Abstractions;
-using XM.Assignment.Domain.Deserializers.Implementations;
+using XM.Assignment.Domain.Deserialiazation.Deserializers;
 
 namespace XM.Assignment.Domain.Deserializers
 {
@@ -19,16 +19,14 @@ namespace XM.Assignment.Domain.Deserializers
             if (_sourcesProvider.GetByName(sourceName) is null)
                 return new DefaultDeserializer();
 
-            var deserializerType = 
-                Assembly.GetExecutingAssembly().GetTypes().FirstOrDefault(type => 
-                    type.IsAssignableFrom(typeof(IDeserializer)) && 
-                    type.Name.ToLower().Contains(sourceName.ToLower()));
+            var allTypes = Assembly.GetExecutingAssembly().GetTypes();
+            var allIDeserializerTypes = allTypes.Where(type => type.GetInterfaces().Contains(typeof(IDeserializer)));
+            var typeContainingSourcename = allIDeserializerTypes.FirstOrDefault(type => type.Name.ToLower().Contains(sourceName.ToLower()));
 
-            if (deserializerType == null)
+            if (typeContainingSourcename == null)
                 return new DefaultDeserializer();
 
-
-            return (IDeserializer) Activator.CreateInstance(deserializerType);
+            return (IDeserializer) Activator.CreateInstance(typeContainingSourcename);
         }
     }
 }

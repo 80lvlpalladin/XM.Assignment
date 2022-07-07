@@ -1,23 +1,20 @@
-
+using XM.Assignment.Domain.Extensions.DI;
 using XM.Assignment.Infrastructure.Configuration;
+using XM.Assignment.Infrastructure.Extensions.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var confBuilder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
-builder.Services.Configure<AppSettings>(confBuilder.Build());
-
 builder.Services.AddHttpClient();
+builder.Services.AddConfiguration();
+builder.Services.AddInfrastructureServices();
+builder.Services.AddDomainServices();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

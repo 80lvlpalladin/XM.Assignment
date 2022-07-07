@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
+using XM.Assignment.Domain.Deserializers;
 using XM.Assignment.Domain.Models;
 
-namespace XM.Assignment.Domain.Deserializers.Implementations
+namespace XM.Assignment.Domain.Deserialiazation.Deserializers
 {
     public class BitfinexDeserializer : IDeserializer
     {
@@ -12,11 +13,7 @@ namespace XM.Assignment.Domain.Deserializers.Implementations
             if (bitfinexResponseModel is null)
                 return null;
 
-            return new PriceLogEntry
-            {
-                Price = bitfinexResponseModel.Last_Price,
-                TimeStamp = bitfinexResponseModel.TimeStamp
-            };
+            return new PriceLogEntry(bitfinexResponseModel.Last_Price, bitfinexResponseModel.TimeStamp);
         }
 
         private class BitfinexResponseModel

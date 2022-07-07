@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XM.Assignment.Domain.Models;
 
-namespace XM.Assignment.Domain.Deserializers
+namespace XM.Assignment.Domain.Deserialiazation.Deserializers
 {
     public interface IDeserializer
     {

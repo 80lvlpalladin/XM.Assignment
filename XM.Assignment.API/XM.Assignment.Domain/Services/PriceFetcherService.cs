@@ -34,9 +34,16 @@ namespace XM.Assignment.Domain.Services
 
 
             //TODO this logic may be different for each source in the future
-            var currentPriceJson = await _httpClient.GetStreamAsync(new Uri(source.Uri, currency));
+            var currentPriceJsonStream = await _httpClient.GetStreamAsync(new Uri(source.Uri, currency));
 
-            return await deserializer.DeserializeJsonAsync(currentPriceJson);
+            var priceLogEntry = await deserializer.DeserializeJsonAsync(currentPriceJsonStream);
+
+            if (priceLogEntry is null)
+                return null;
+
+            _priceLogDatastore.Save(sourceName, currency, priceLogEntry);
+
+            return priceLogEntry;
         }
     }
 }

@@ -4,7 +4,7 @@ namespace XM.Assignment.Domain.Abstractions
 {
     public interface IPriceLogDatastore
     {
-        IEnumerable<PriceLogEntry>? GetAll(string sourceName);
-        bool Save(string sourceName, PriceLogEntry logEntry);
+        IEnumerable<PriceLogEntry>? GetAll(string sourceName, string currency);
+        bool Save(string sourceName, string currency, PriceLogEntry logEntry);
     }
 }

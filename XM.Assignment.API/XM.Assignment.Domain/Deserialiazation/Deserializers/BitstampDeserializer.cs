@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
+using XM.Assignment.Domain.Deserializers;
 using XM.Assignment.Domain.Models;
 
-namespace XM.Assignment.Domain.Deserializers.Implementations
+namespace XM.Assignment.Domain.Deserialiazation.Deserializers
 {
     public class BitstampDeserializer : IDeserializer
     {
@@ -12,11 +13,8 @@ namespace XM.Assignment.Domain.Deserializers.Implementations
             if (bitstampResponseModel is null)
                 return null;
 
-            return new PriceLogEntry
-            {
-                Price = bitstampResponseModel.Last,
-                TimeStamp = bitstampResponseModel.TimeStamp
-            };
+            return new PriceLogEntry(bitstampResponseModel.Last, bitstampResponseModel.TimeStamp);
+
         }
 
         private class BitstampResponseModel
