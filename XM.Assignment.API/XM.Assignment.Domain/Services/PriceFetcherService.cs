@@ -1,49 +1,50 @@
 ﻿using XM.Assignment.Domain.Abstractions;
-using XM.Assignment.Domain.Deserializers;
+using XM.Assignment.Domain.Deserialiazation.Deserializers;
 using XM.Assignment.Domain.Models;
+using XM.Assignment.Domain.UriProducers;
+using XM.Assignment.Domain.Utiilities;
 
-namespace XM.Assignment.Domain.Services
+namespace XM.Assignment.Domain.Services;
+
+internal class PriceFetcherService : IPriceFetcherService
 {
-    internal class PriceFetcherService : IPriceFetcherService
+    private readonly HttpClient _httpClient;
+    private readonly ISourcesProvider _sourcesProvider;
+    private readonly IPriceLogDatastore _priceLogDatastore;
+    private readonly ISourceSpecificsProvider _sourceSpecificsProvider;
+
+    public PriceFetcherService(
+        IHttpClientFactory httpClientFactory, 
+        ISourcesProvider sourcesProvider, 
+        IPriceLogDatastore priceLogDatastore,
+        ISourceSpecificsProvider sourceSpecificsProvider)
     {
-        private readonly HttpClient _httpClient;
-        private readonly ISourcesProvider _sourcesProvider;
-        private readonly IPriceLogDatastore _priceLogDatastore;
-        private readonly IDeserializerProvider _deserializerProvider;
+        _httpClient = httpClientFactory.CreateClient();
+        _sourcesProvider = sourcesProvider;
+        _priceLogDatastore = priceLogDatastore;
+        _sourceSpecificsProvider = sourceSpecificsProvider;
+    }
 
-        public PriceFetcherService(
-            IHttpClientFactory httpClientFactory, 
-            ISourcesProvider sourcesProvider, 
-            IPriceLogDatastore priceLogDatastore,
-            IDeserializerProvider deserializerProvider)
-        {
-            _httpClient = httpClientFactory.CreateClient();
-            _sourcesProvider = sourcesProvider;
-            _priceLogDatastore = priceLogDatastore;
-            _deserializerProvider = deserializerProvider;
-        }
+    public async Task<PriceLogEntry?> GetCurrentPriceAsync(string sourceName, string currency)
+    {
+        var source = _sourcesProvider.GetByName(sourceName);
 
-        public async Task<PriceLogEntry?> GetCurrentPriceAsync(string sourceName, string currency)
-        {
-            var source = _sourcesProvider.GetByName(sourceName);
+        if (source is null)
+            return null;
 
-            if (source is null)
-                return null;
+        var deserializer = _sourceSpecificsProvider.GetImplementationOf<IDeserializer>(sourceName);
+        var uriProducer = _sourceSpecificsProvider.GetImplementationOf<IUriProducer>(sourceName);
 
-            var deserializer = _deserializerProvider.GetBySourceName(sourceName);
+        var uri = uriProducer.Produce(source.Uri, currency);
+        var currentPriceJsonStream = await _httpClient.GetStreamAsync(uri);
 
+        var priceLogEntry = await deserializer.DeserializeJsonAsync(currentPriceJsonStream);
 
-            //TODO this logic may be different for each source in the future
-            var currentPriceJsonStream = await _httpClient.GetStreamAsync(new Uri(source.Uri, currency));
+        if (priceLogEntry is null)
+            return null;
 
-            var priceLogEntry = await deserializer.DeserializeJsonAsync(currentPriceJsonStream);
+        _priceLogDatastore.Save(sourceName, currency, priceLogEntry);
 
-            if (priceLogEntry is null)
-                return null;
-
-            _priceLogDatastore.Save(sourceName, currency, priceLogEntry);
-
-            return priceLogEntry;
-        }
+        return priceLogEntry;
     }
 }

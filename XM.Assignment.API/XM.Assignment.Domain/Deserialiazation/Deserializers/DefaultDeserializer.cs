@@ -1,16 +1,19 @@
 ﻿using System.Text.Json;
-using XM.Assignment.Domain.Deserializers;
+using System.Text.Json.Serialization;
 using XM.Assignment.Domain.Models;
 
-namespace XM.Assignment.Domain.Deserialiazation.Deserializers
-{
-    public class DefaultDeserializer : IDeserializer
-    {
-        public string SourceName => "default";
+namespace XM.Assignment.Domain.Deserialiazation.Deserializers;
 
-        public async Task<PriceLogEntry?> DeserializeJsonAsync(Stream jsonStream)
-        {
-            return await JsonSerializer.DeserializeAsync<PriceLogEntry>(jsonStream);
-        }
+public class DefaultDeserializer : IDeserializer
+{
+    protected JsonSerializerOptions _jsonSerializerOptions => new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString
+    };
+
+    public virtual async Task<PriceLogEntry?> DeserializeJsonAsync(Stream jsonStream)
+    {
+        return await JsonSerializer.DeserializeAsync<PriceLogEntry>(jsonStream, _jsonSerializerOptions);
     }
 }

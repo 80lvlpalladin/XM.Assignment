@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using XM.Assignment.Domain.Models;
+﻿using XM.Assignment.Domain.Models;
 
-namespace XM.Assignment.Infrastructure.Configuration
+namespace XM.Assignment.Infrastructure.Configuration;
+
+public class AppSettings
 {
-    public class AppSettings
-    {
-        public IEnumerable<Source> Sources { get; set; }
-    }
+    public IEnumerable<Source> Sources { get; set; }
 }

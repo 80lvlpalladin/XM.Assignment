@@ -1,26 +1,27 @@
 ﻿using System.Text.Json;
-using XM.Assignment.Domain.Deserializers;
 using XM.Assignment.Domain.Models;
 
-namespace XM.Assignment.Domain.Deserialiazation.Deserializers
+namespace XM.Assignment.Domain.Deserialiazation.Deserializers;
+
+public class BitstampDeserializer : DefaultDeserializer
 {
-    public class BitstampDeserializer : IDeserializer
+    public override async Task<PriceLogEntry?> DeserializeJsonAsync(Stream jsonStream)
     {
-        public async Task<PriceLogEntry?> DeserializeJsonAsync(Stream jsonStream)
+        var bitstampResponseModel = await JsonSerializer.DeserializeAsync<BitstampResponseModel>(jsonStream, _jsonSerializerOptions);
+
+        if (bitstampResponseModel is null)
+            return null;
+
+        return new PriceLogEntry
         {
-            var bitstampResponseModel = await JsonSerializer.DeserializeAsync<BitstampResponseModel>(jsonStream);
+            Price = bitstampResponseModel.Last,
+            TimeStamp = bitstampResponseModel.TimeStamp
+        };
+    }
 
-            if (bitstampResponseModel is null)
-                return null;
-
-            return new PriceLogEntry(bitstampResponseModel.Last, bitstampResponseModel.TimeStamp);
-
-        }
-
-        private class BitstampResponseModel
-        {
-            public decimal Last { get; set; }
-            public DateTime TimeStamp { get; set; }
-        }
+    private class BitstampResponseModel
+    {
+        public decimal Last { get; set; }
+        public uint TimeStamp { get; set; }
     }
 }

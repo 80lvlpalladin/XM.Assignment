@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XM.Assignment.Domain.UriBuilders
+namespace XM.Assignment.Domain.Models.Enums
 {
-    internal class DefaultUriBuilder
+    public enum FilteringOptions
     {
+        Source = 0,
+        Date = 1
     }
 }

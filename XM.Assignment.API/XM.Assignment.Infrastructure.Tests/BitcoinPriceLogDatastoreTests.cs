@@ -11,9 +11,9 @@ namespace XM.Assignment.Infrastructure.Tests
     {
         private IEnumerable<Source> _testSources = new[]
             {
-                new Source("Bitstamp", new Uri("http://someUri")),
-                new Source("Bitfinex", new Uri("http://someUri"))
-            };
+            new Source{Name = "Bitstamp", Uri = new Uri("http://someUri")},
+            new Source{Name = "Bitfinex", Uri = new Uri("http://someUri")}
+        };
 
         [Fact]
         public void Datastore_StoresTheExactAmountOfPricelogs_ThatWereSaved_ForExistingSource()
@@ -22,12 +22,12 @@ namespace XM.Assignment.Infrastructure.Tests
             var datastore = CreatePriceLogDatastore();
 
             //Act
-            datastore.Save("Bitstamp", "btcusd", new PriceLogEntry(8.2m, DateTime.Now));
-            datastore.Save("Bitstamp", "btcusd", new PriceLogEntry(8.3m, DateTime.Now.AddMinutes(1)));
-            datastore.Save("Bitstamp", "btcusd", new PriceLogEntry(8.7m, DateTime.Now.AddMinutes(2)));
+            datastore.Save("Bitstamp", "btcusd", new PriceLogEntry { Price = 8.1m, TimeStamp = 100 });
+            datastore.Save("Bitstamp", "btcusd", new PriceLogEntry { Price = 8.3m, TimeStamp = 200 });
+            datastore.Save("Bitstamp", "btcusd", new PriceLogEntry { Price = 8.4m, TimeStamp = 230 });
 
             //Assert
-            Assert.Equal(3, datastore.GetAll("Bitstamp", "btcusd").Count());
+            Assert.Equal(3, datastore.GetForSourceAndCurrency("Bitstamp", "btcusd").Count());
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace XM.Assignment.Infrastructure.Tests
             var datastore = CreatePriceLogDatastore();
 
             //Act-Assert
-            Assert.True(_testSources.All(s => datastore.GetAll(s.Name, "btcusd").Count() is 0));
+            Assert.True(_testSources.All(s => datastore.GetForSourceAndCurrency(s.Name, "btcusd").Count() is 0));
 
         }
 
@@ -49,7 +49,7 @@ namespace XM.Assignment.Infrastructure.Tests
             var nonExistingSource = "sdgwag";
 
             //Act-Assert
-            Assert.Null(datastore.GetAll(nonExistingSource, "btcusd"));
+            Assert.Null(datastore.GetForSourceAndCurrency(nonExistingSource, "btcusd"));
         }
 
         private PriceLogDatastore CreatePriceLogDatastore()

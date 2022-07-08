@@ -22,7 +22,6 @@ public static class ServiceRegistrant
         var confBuilder = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false);
-
         services.Configure<AppSettings>(confBuilder.Build());
         return services;
     }
